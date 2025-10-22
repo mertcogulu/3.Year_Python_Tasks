@@ -12,10 +12,13 @@ app.config['CACHE_DEFAULT_TIMEOUT'] = 30
 
 cache = Cache(app)
 
+
 @cache.memoize(timeout=30)
 def slow_function(x):
+    # Simulate a slow task
     time.sleep(6)
     return {"input": x, "output": x ** 2}
+
 
 @app.route('/')
 def home():
@@ -25,10 +28,12 @@ def home():
     <p>This endpoint simulates a slow function and caches the result in Redis for 30 seconds.</p>
     """
 
+
 @app.route('/compute')
 def compute():
     x = request.args.get("x", 2, type=int)
     return jsonify(slow_function(x))
 
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5001)
